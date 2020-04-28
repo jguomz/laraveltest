@@ -2,8 +2,13 @@
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
-
+    Options +FollowSymLinks
     RewriteEngine On
+
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP_HOST} !^127.0.0.1
+    RewriteCond %{REMOTE_HOST} !^127.0.0.1
+    RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
@@ -19,3 +24,7 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+<FilesMatch "\.(css|js|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4|woff2|ttf|otf)$">
+Header set Cache-Control "public"
+Header set Expires "access plus 31536000 seconds"
+</FilesMatch>
